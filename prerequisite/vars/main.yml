@@ -1,0 +1,9 @@
+---
+# vars file for prerequisite
+package_list: 
+  - chkconfig.x86_64 
+  - java-1.8.0-openjdk.x86_64
+
+ports:
+  - {port: "8081",prot: "tcp"}
+  - {port: "22",prot: "tcp"}

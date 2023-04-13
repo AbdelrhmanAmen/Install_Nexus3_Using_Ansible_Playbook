@@ -1,0 +1,5 @@
+- hosts: RepoManager
+  remote_user: root
+  roles:
+    - prerequisite
+    - nexus3

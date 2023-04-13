@@ -1,0 +1,69 @@
+---
+# tasks file for nexus3
+- name: Create nexus directory
+  file:
+    path: "{{dir}}"
+    state: directory
+
+- name: add user Nexus
+  user:
+    name: nexus
+
+- name: Download latest nexus
+  get_url:
+    url: https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+    dest: "{{dir}}/nexus.tar.gz"
+    headers:
+      Accept: '*/*'
+
+- name: Extract nexus.tar.gz
+  unarchive:
+    src: "{{dir}}/nexus.tar.gz"
+    dest: "{{dir}}/"
+    remote_src: true
+
+- name: list content
+  shell: "ls {{dir}}"
+  register: app
+
+- name: show list result
+  debug:
+    var: app.stdout_lines    
+
+- name: Change ownership
+  shell: "{{item}}"
+  args:
+    executable: /bin/bash
+  loop:
+    # - "mv {{dir}}/nexus-* {{dir}}/nexus"
+    - "chown -R nexus:nexus {{dir}}/nexus"
+    - "chown -R nexus:nexus {{dir}}/sonatype-work"
+    -  echo run_as_user='nexus' > {{dir}}/nexus/bin/nexus.rc
+  
+  
+- name: run nexus as service
+  template:
+    src:  templates/nexus.service.j2
+    dest: /etc/systemd/system/nexus.service
+    owner: nexus
+    group: nexus
+  
+- name: Add nexus to boot
+  shell: chkconfig nexus on 
+  
+- name: Change SELINUX context
+  shell: "chcon -R -t bin_t {{dir}}/nexus/bin/nexus"
+
+- name: Start the Nexus service
+  service:
+    name: nexus
+    state: started
+    enabled: yes
+
+- name: Get login password
+  shell: cat {{dir}}/sonatype-work/nexus3/admin.password
+  register: password
+
+- name: Show login password
+  debug:
+    var: password.stdout_lines

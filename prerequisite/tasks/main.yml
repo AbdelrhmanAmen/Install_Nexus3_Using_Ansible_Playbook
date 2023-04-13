@@ -1,0 +1,24 @@
+---
+# tasks file for prerequisite
+- name: Update packages
+  package:
+    update_cache: yes
+
+- name: Install packages
+  package:
+    name: "{{item}}"
+    state: present
+  loop:
+    - "{{package_list}}"
+
+- name: Permit traffic on port 22 & 8081/tcp
+  firewalld:
+    port: "{{item.port}}/{{item.prot}}"
+    permanent: true
+    immediate: true
+    state: enabled
+  loop: "{{ports}}"
+
+
+
+
