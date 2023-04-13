@@ -14,7 +14,7 @@
     url: https://download.sonatype.com/nexus/3/latest-unix.tar.gz
     dest: "{{dir}}/nexus.tar.gz"
     headers:
-      Accept: '*/*'
+      Accept: "*/*"
 
 - name: Extract nexus.tar.gz
   unarchive:
@@ -28,29 +28,28 @@
 
 - name: show list result
   debug:
-    var: app.stdout_lines    
+    var: app.stdout_lines
 
 - name: Change ownership
   shell: "{{item}}"
   args:
     executable: /bin/bash
   loop:
-    # - "mv {{dir}}/nexus-* {{dir}}/nexus"
+    - "mv {{dir}}/nexus-* {{dir}}/nexus"
     - "chown -R nexus:nexus {{dir}}/nexus"
     - "chown -R nexus:nexus {{dir}}/sonatype-work"
-    -  echo run_as_user='nexus' > {{dir}}/nexus/bin/nexus.rc
-  
-  
+    - echo run_as_user='nexus' > {{dir}}/nexus/bin/nexus.rc
+
 - name: run nexus as service
   template:
-    src:  templates/nexus.service.j2
+    src: templates/nexus.service.j2
     dest: /etc/systemd/system/nexus.service
     owner: nexus
     group: nexus
-  
+
 - name: Add nexus to boot
-  shell: chkconfig nexus on 
-  
+  shell: chkconfig nexus on
+
 - name: Change SELINUX context
   shell: "chcon -R -t bin_t {{dir}}/nexus/bin/nexus"
 
