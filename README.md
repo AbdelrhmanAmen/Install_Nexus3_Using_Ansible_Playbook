@@ -1,7 +1,7 @@
 # Install_Nexus3_Using_Ansible_Playbook
 
 ## Overview
-> Install Latest Sonatype Nexus 3 on CentOS 8 using ansible 
+> Install Latest Sonatype Nexus 3 on CentOS 8 using ansible.
 > [Sonatype Nexus3](https://www.sonatype.com/products/nexus-repository) is an open-source repository manager used to manage and organize software components, build artifacts, and third-party dependencies. It is widely used in DevOps and software development workflows to streamline the software development lifecycle.
 
 ---
